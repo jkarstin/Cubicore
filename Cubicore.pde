@@ -1,4 +1,5 @@
 PShape table;
+PShape leg1, leg2, leg3, leg4;
 PShape cube;
 
 final int CROSS = 0;
@@ -8,18 +9,33 @@ void setup() {
   size(1280, 720, P3D);
   table = wrapBox("WoodenTable.png", 700, 50, 400);
   cube = wrapCube("bitCubeTexture.png", 80, 100);
-  if (table == null || cube == null) exit();
+  leg1 = wrapBox("TableLeg.png", 40, 500, 40, SHELL);
+  leg2 = wrapBox("TableLeg.png", 40, 500, 40, SHELL);
+  leg3 = wrapBox("TableLeg.png", 40, 500, 40, SHELL);
+  leg4 = wrapBox("TableLeg.png", 40, 500, 40, SHELL);
+  if (table == null || cube == null || leg1 == null) exit();
+  
+  table.addChild(cube);
+  cube.rotateY(PI/6);
+  cube.translate(0, -75, 0);
+  table.addChild(leg1);
+  table.addChild(leg2);
+  table.addChild(leg3);
+  table.addChild(leg4);
+  leg1.rotateY(0);
+  leg1.translate(-310, 275, 160);
+  leg2.rotateY(PI/2);
+  leg2.translate(310, 275, 160);
+  leg3.rotateY(PI);
+  leg3.translate(310, 275, -160);
+  leg4.rotateY(3*PI/2);
+  leg4.translate(-310, 275, -160);
 }
 
 void draw() {
   background(127);
-  table.rotateY(PI/180);
-  table.rotateX(PI/360);
-  cube.rotateY(PI/180);
-  cube.rotateX(PI/360);
-  translate(width/2, height/3);
-  shape(cube);
-  translate(0, height/3);
+  table.rotateY(PI/720);
+  translate(width/2, 2*height/3, -1000);
   shape(table);
 }
 
