@@ -10,6 +10,8 @@ PShape cube;
 
 boolean moveLeft=false, moveRight=false, moveForward=false, moveBack=false, turnLeft=false, turnRight=false;
 
+Coord worldLocVect, camLocVect, moveVect;
+
 float camPosX = 0, camPosZ = 30;
 float camPosY = 0;
 float angleY = 0;
@@ -21,7 +23,11 @@ final float focalDepth = 3000;
 void setup() {
   size(1280, 720, P3D);
   
-  camera(0, -750, 3000, 0, 0, 0, 0, 1.0, 0);
+  worldLocVect = new Coord(0, 0, 30);
+  camLocVect = worldLocVect.times(moveSpeed);
+  moveVect = new Coord();
+  
+  camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), 0, 0, 0, 0, 1.0, 0);
   
   table = wrapBox("WoodenTable.png", 700, 50, 400);
   cube = wrapCube("bitCubeTexture.png", 80, 100);
@@ -105,14 +111,21 @@ void keyReleased() {
 void draw() {
   background(127);
   
-  if (moveLeft) camPosX--;
-  else if (moveRight) camPosX++;
-  if (moveForward) camPosZ--;
-  else if (moveBack) camPosZ++;
+  moveVect.constant(0f);
+  
+  if (moveLeft)       moveVect.add(new Coord(-1f, 0f,  0f));
+  else if (moveRight) moveVect.add(new Coord( 1f, 0f,  0f));
+  if (moveForward)    moveVect.add(new Coord( 0f, 0f, -1f));
+  else if (moveBack)  moveVect.add(new Coord( 0f, 0f,  1f));
   if (turnLeft) angleY--;
   else if (turnRight) angleY++;
   
-  camera(moveSpeed*camPosX, moveSpeed*camPosY, moveSpeed*camPosZ, moveSpeed*camPosX + focalDepth*sin(turnSpeed*angleY*PI/180), moveSpeed*camPosY + focalDepth*sin(turnSpeed*angleX*PI/180), moveSpeed*camPosZ - focalDepth*(cos(turnSpeed*angleY*PI/180)), 0, 1.0, 0);
+  moveVect.normalize();
+  
+  worldLocVect.add(moveVect);
+  camLocVect = worldLocVect.times(moveSpeed);
+  
+  camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), camLocVect.x() + focalDepth*sin(turnSpeed*angleY*PI/180), camLocVect.y() + focalDepth*sin(turnSpeed*angleX*PI/180), camLocVect.z() - focalDepth*(cos(turnSpeed*angleY*PI/180)), 0, 1.0, 0);
   
   shape(table);
 }
