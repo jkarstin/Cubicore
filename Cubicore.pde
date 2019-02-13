@@ -1,12 +1,28 @@
-PShape table;
-PShape leg1, leg2, leg3, leg4;
-PShape cube;
+/* Cubicore.pde
+ */
 
 final int CROSS = 0;
 final int SHELL = 1;
 
+PShape table;
+PShape leg1, leg2, leg3, leg4;
+PShape cube;
+
+boolean moveLeft=false, moveRight=false, moveForward=false, moveBack=false, turnLeft=false, turnRight=false;
+
+float camPosX = 0, camPosZ = 30;
+float camPosY = 0;
+float angleY = 0;
+float angleX = 0;
+final float moveSpeed = 100;
+final float turnSpeed = 2;
+final float focalDepth = 3000;
+
 void setup() {
   size(1280, 720, P3D);
+  
+  camera(0, -750, 3000, 0, 0, 0, 0, 1.0, 0);
+  
   table = wrapBox("WoodenTable.png", 700, 50, 400);
   cube = wrapCube("bitCubeTexture.png", 80, 100);
   leg1 = wrapBox("TableLeg.png", 40, 500, 40, SHELL);
@@ -32,10 +48,72 @@ void setup() {
   leg4.translate(-310, 275, -160);
 }
 
+
+void keyPressed() {
+  if (key == 'a') {
+    moveLeft = true;
+    moveRight = false;
+  }
+  else if (key == 'd') {
+    moveRight = true;
+    moveLeft = false;
+  }
+  
+  if (key == 'w') {
+    moveForward = true;
+    moveBack = false;
+  }
+  else if (key == 's') {
+    moveBack = true;
+    moveForward = false;
+  }
+  
+  if (key == 'q') {
+    turnLeft = true;
+    turnRight = false;
+  }
+  else if (key == 'e') {
+    turnRight = true;
+    turnLeft = false;
+  }
+}
+
+void keyReleased() {
+  if (key == 'a') {
+    moveLeft = false;
+  }
+  else if (key == 'd') {
+    moveRight = false;
+  }
+  
+  if (key == 'w') {
+    moveForward = false;
+  }
+  else if (key == 's') {
+    moveBack = false;
+  }
+  
+  if (key == 'q') {
+    turnLeft = false;
+  }
+  else if (key == 'e') {
+    turnRight = false;
+  }
+}
+
+
 void draw() {
   background(127);
-  table.rotateY(PI/720);
-  translate(width/2, 2*height/3, -1000);
+  
+  if (moveLeft) camPosX--;
+  else if (moveRight) camPosX++;
+  if (moveForward) camPosZ--;
+  else if (moveBack) camPosZ++;
+  if (turnLeft) angleY--;
+  else if (turnRight) angleY++;
+  
+  camera(moveSpeed*camPosX, moveSpeed*camPosY, moveSpeed*camPosZ, moveSpeed*camPosX + focalDepth*sin(turnSpeed*angleY*PI/180), moveSpeed*camPosY + focalDepth*sin(turnSpeed*angleX*PI/180), moveSpeed*camPosZ - focalDepth*(cos(turnSpeed*angleY*PI/180)), 0, 1.0, 0);
+  
   shape(table);
 }
 
