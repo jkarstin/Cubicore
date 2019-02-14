@@ -1,41 +1,52 @@
 /* Cubicore.pde
  */
+ 
+import java.awt.*;
 
-final int CROSS = 0;
-final int SHELL = 1;
+final float moveSpeed = 50;
+final float turnSpeed = 0.5;
+final float focalDepth = 3000;
+final UVUtils UVU = new UVUtils();
 
 PShape table;
 PShape leg1, leg2, leg3, leg4;
 PShape cube;
 
 boolean moveLeft=false, moveRight=false, moveForward=false, moveBack=false, turnLeft=false, turnRight=false;
+boolean lockMouse=false;
 
-Coord worldLocVect, camLocVect, moveVect;
+Coord camLocVect, camRotVect, focalPointLocVect;
+Coord moveVect, mouseVect, turnVect;
 
-float camPosX = 0, camPosZ = 30;
-float camPosY = 0;
-float angleY = 0;
-float angleX = 0;
-final float moveSpeed = 100;
-final float turnSpeed = 2;
-final float focalDepth = 3000;
+Robot mouseRobot;
 
 void setup() {
   size(1280, 720, P3D);
   
-  worldLocVect = new Coord(0, 0, 30);
-  camLocVect = worldLocVect.times(moveSpeed);
+  try{
+    mouseRobot = new Robot();
+    mouseRobot.mouseMove(width/2, height/2);
+  } catch (Exception e) {
+    println("mouseRobot failed to initialize!");
+    exit();
+  }
+  
+  camLocVect = new Coord(0, -750, 3000);
+  focalPointLocVect = new Coord(0, -750, 0);
+  camRotVect = new Coord();
   moveVect = new Coord();
+  mouseVect = new Coord();
+  turnVect = new Coord();
   
-  camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), 0, 0, 0, 0, 1.0, 0);
+  camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), focalPointLocVect.x(), focalPointLocVect.y(), focalPointLocVect.z(), 0, 1.0, 0);
   
-  table = wrapBox("WoodenTable.png", 700, 50, 400);
-  cube = wrapCube("bitCubeTexture.png", 80, 100);
-  leg1 = wrapBox("TableLeg.png", 40, 500, 40, SHELL);
-  leg2 = wrapBox("TableLeg.png", 40, 500, 40, SHELL);
-  leg3 = wrapBox("TableLeg.png", 40, 500, 40, SHELL);
-  leg4 = wrapBox("TableLeg.png", 40, 500, 40, SHELL);
-  if (table == null || cube == null || leg1 == null) exit();
+  table = UVU.wrapBox("WoodenTable.png", new Coord(700, 50, 400));
+  cube = UVU.wrapCube("bitCubeTexture.png", 80, 100);
+  leg1 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
+  leg2 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
+  leg3 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
+  leg4 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
+  if (table == null || cube == null || leg1 == null || leg2 == null || leg3 == null || leg4 == null) exit();
   
   table.addChild(cube);
   cube.rotateY(PI/6);
@@ -82,6 +93,9 @@ void keyPressed() {
     turnRight = true;
     turnLeft = false;
   }
+  
+  if (key == TAB) lockMouse = !lockMouse;
+  if (key == ESC) exit();
 }
 
 void keyReleased() {
@@ -107,183 +121,43 @@ void keyReleased() {
   }
 }
 
+void mouseMoved() {
+  if (lockMouse) {
+    mouseVect = new Coord(mouseY-pmouseY, mouseX-pmouseX, 0f);
+    mouseRobot.mouseMove(width/2, height/2);
+  }
+}
 
 void draw() {
   background(127);
   
-  moveVect.constant(0f);
+  if (lockMouse) noCursor();
+  else cursor();
   
-  if (moveLeft)       moveVect.add(new Coord(-1f, 0f,  0f));
-  else if (moveRight) moveVect.add(new Coord( 1f, 0f,  0f));
-  if (moveForward)    moveVect.add(new Coord( 0f, 0f, -1f));
-  else if (moveBack)  moveVect.add(new Coord( 0f, 0f,  1f));
-  if (turnLeft) angleY--;
-  else if (turnRight) angleY++;
+  moveVect.constant(0f);
+  turnVect.constant(0f);
+  
+  if (moveLeft)       moveVect.add(new Coord(-1f,  0f,  0f));
+  else if (moveRight) moveVect.add(new Coord( 1f,  0f,  0f));
+  if (moveForward)    moveVect.add(new Coord( 0f,  0f, -1f));
+  else if (moveBack)  moveVect.add(new Coord( 0f,  0f,  1f));
   
   moveVect.normalize();
+  moveVect.rotateY(camRotVect.y());
   
-  worldLocVect.add(moveVect);
-  camLocVect = worldLocVect.times(moveSpeed);
+  camLocVect.add(moveVect.times(moveSpeed));
+
+  turnVect.add(mouseVect);
+  mouseVect.constant(0f);
+  camRotVect.add(turnVect.times(turnSpeed*PI/180));
+  camRotVect.clampX(-80f*PI/180, 80f*PI/180);
   
-  camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), camLocVect.x() + focalDepth*sin(turnSpeed*angleY*PI/180), camLocVect.y() + focalDepth*sin(turnSpeed*angleX*PI/180), camLocVect.z() - focalDepth*(cos(turnSpeed*angleY*PI/180)), 0, 1.0, 0);
+  focalPointLocVect = new Coord(0f, 0f, -focalDepth);
+  focalPointLocVect.rotateX(camRotVect.x());
+  focalPointLocVect.rotateY(camRotVect.y());
+  focalPointLocVect.add(camLocVect);
+  
+  camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), focalPointLocVect.x(), focalPointLocVect.y(), focalPointLocVect.z(), 0, 1.0, 0);
   
   shape(table);
-}
-
-PShape wrapBox(String texImgPath, float xTex, float yTex, float zTex) {
-  return wrapBox(texImgPath, xTex, yTex, zTex, CROSS);
-}
-
-PShape wrapBox(String texImgPath, float xTex, float yTex, float zTex, int layout) {
-  return wrapBox(texImgPath, xTex, yTex, zTex, xTex, yTex, zTex, layout);
-}
-
-PShape wrapBox(String texImgPath, float xTex, float yTex, float zTex, float xBox, float yBox, float zBox) {
-  return wrapBox(texImgPath, xTex, yTex, zTex, xBox, yBox, zBox, CROSS);
-}
-
-PShape wrapCube(String texImgPath, int eDim, float cDiam) {
-  return wrapBox(texImgPath, eDim, eDim, eDim, cDiam, cDiam, cDiam, SHELL);
-}
-
-PShape wrapBox(String texImgPath, float xTex, float yTex, float zTex, float xBox, float yBox, float zBox, int layout) {
-  //Load in texture image
-  PImage tex = loadImage(texImgPath);
-  if (tex == null) {
-    println("ERROR: Image file '"+ texImgPath +"' not found!");
-    return null;
-  }
-  
-  //Create base quad shapes
-  PShape q1 = createShape();
-  PShape q2 = createShape();
-  PShape q3 = createShape();
-  PShape q4 = createShape();
-  PShape q5 = createShape();
-  PShape q6 = createShape();
-  
-  //Set source texture for quads
-  q1.setTexture(tex);
-  q2.setTexture(tex);
-  q3.setTexture(tex);
-  q4.setTexture(tex);
-  q5.setTexture(tex);
-  q6.setTexture(tex);
-  
-  //Generate quad shapes mapped with texture based on given texture layout style
-  switch (layout) {
-  case 0:
-    //CROSS LAYOUT
-    q1.beginShape();
-    q1.noStroke();
-    q1.vertex(-0.5*xBox, -0.5*yBox, -0.5*zBox, 0*xTex+0*zTex, 0*yTex+1*zTex);
-    q1.vertex(-0.5*xBox, -0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 0*yTex+1*zTex);
-    q1.vertex(-0.5*xBox,  0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 1*yTex+1*zTex);
-    q1.vertex(-0.5*xBox,  0.5*yBox, -0.5*zBox, 0*xTex+0*zTex, 1*yTex+1*zTex);
-    q1.endShape();
-    
-    q2.beginShape();
-    q2.noStroke();
-    q2.vertex(-0.5*xBox, -0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 0*yTex+1*zTex);
-    q2.vertex( 0.5*xBox, -0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 0*yTex+1*zTex);
-    q2.vertex( 0.5*xBox,  0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 1*yTex+1*zTex);
-    q2.vertex(-0.5*xBox,  0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 1*yTex+1*zTex);
-    q2.endShape();
-    
-    q3.beginShape();
-    q3.noStroke();
-    q3.vertex( 0.5*xBox, -0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 0*yTex+1*zTex);
-    q3.vertex( 0.5*xBox, -0.5*yBox, -0.5*zBox, 1*xTex+2*zTex, 0*yTex+1*zTex);
-    q3.vertex( 0.5*xBox,  0.5*yBox, -0.5*zBox, 1*xTex+2*zTex, 1*yTex+1*zTex);
-    q3.vertex( 0.5*xBox,  0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 1*yTex+1*zTex);
-    q3.endShape();
-    
-    q4.beginShape();
-    q4.noStroke();
-    q4.vertex(-0.5*xBox, -0.5*yBox, -0.5*zBox, 0*xTex+1*zTex, 0*yTex+0*zTex);
-    q4.vertex( 0.5*xBox, -0.5*yBox, -0.5*zBox, 1*xTex+1*zTex, 0*yTex+0*zTex);
-    q4.vertex( 0.5*xBox, -0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 0*yTex+1*zTex);
-    q4.vertex(-0.5*xBox, -0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 0*yTex+1*zTex);
-    q4.endShape();
-    
-    q5.beginShape();
-    q5.noStroke();
-    q5.vertex(-0.5*xBox,  0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 1*yTex+1*zTex);
-    q5.vertex( 0.5*xBox,  0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 1*yTex+1*zTex);
-    q5.vertex( 0.5*xBox,  0.5*yBox, -0.5*zBox, 1*xTex+1*zTex, 1*yTex+2*zTex);
-    q5.vertex(-0.5*xBox,  0.5*yBox, -0.5*zBox, 0*xTex+1*zTex, 1*yTex+2*zTex);
-    q5.endShape();
-    
-    q6.beginShape();
-    q6.noStroke();
-    q6.vertex(-0.5*xBox,  0.5*yBox, -0.5*zBox, 0*xTex+1*zTex, 1*yTex+2*zTex);
-    q6.vertex( 0.5*xBox,  0.5*yBox, -0.5*zBox, 1*xTex+1*zTex, 1*yTex+2*zTex);
-    q6.vertex( 0.5*xBox, -0.5*yBox, -0.5*zBox, 1*xTex+1*zTex, 2*yTex+2*zTex);
-    q6.vertex(-0.5*xBox, -0.5*yBox, -0.5*zBox, 0*xTex+1*zTex, 2*yTex+2*zTex);
-    q6.endShape();
-    break;
-  default:
-  case 1:
-    //SHELL LAYOUT
-    q1.beginShape();
-    q1.noStroke();
-    q1.vertex(-0.5*xBox, -0.5*yBox, -0.5*zBox, 0*xTex+0*zTex, 0*xTex+0*yTex+1*zTex);
-    q1.vertex(-0.5*xBox, -0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 0*xTex+0*yTex+1*zTex);
-    q1.vertex(-0.5*xBox,  0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 0*xTex+1*yTex+1*zTex);
-    q1.vertex(-0.5*xBox,  0.5*yBox, -0.5*zBox, 0*xTex+0*zTex, 0*xTex+1*yTex+1*zTex);
-    q1.endShape();
-    
-    q2.beginShape();
-    q2.noStroke();
-    q2.vertex(-0.5*xBox, -0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 0*xTex+0*yTex+1*zTex);
-    q2.vertex( 0.5*xBox, -0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 0*xTex+0*yTex+1*zTex);
-    q2.vertex( 0.5*xBox,  0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 0*xTex+1*yTex+1*zTex);
-    q2.vertex(-0.5*xBox,  0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 0*xTex+1*yTex+1*zTex);
-    q2.endShape();
-    
-    q3.beginShape();
-    q3.noStroke();
-    q3.vertex( 0.5*xBox, -0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 0*xTex+0*yTex+1*zTex);
-    q3.vertex( 0.5*xBox, -0.5*yBox, -0.5*zBox, 1*xTex+2*zTex, 0*xTex+0*yTex+1*zTex);
-    q3.vertex( 0.5*xBox,  0.5*yBox, -0.5*zBox, 1*xTex+2*zTex, 0*xTex+1*yTex+1*zTex);
-    q3.vertex( 0.5*xBox,  0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 0*xTex+1*yTex+1*zTex);
-    q3.endShape();
-    
-    q4.beginShape();
-    q4.noStroke();
-    q4.vertex( 0.5*xBox, -0.5*yBox, -0.5*zBox, 1*xTex+2*zTex, 0*xTex+0*yTex+1*zTex);
-    q4.vertex(-0.5*xBox, -0.5*yBox, -0.5*zBox, 2*xTex+2*zTex, 0*xTex+0*yTex+1*zTex);
-    q4.vertex(-0.5*xBox,  0.5*yBox, -0.5*zBox, 2*xTex+2*zTex, 0*xTex+1*yTex+1*zTex);
-    q4.vertex( 0.5*xBox,  0.5*yBox, -0.5*zBox, 1*xTex+2*zTex, 0*xTex+1*yTex+1*zTex);
-    q4.endShape();
-    
-    q5.beginShape();
-    q5.noStroke();
-    q5.vertex(-0.5*xBox, -0.5*yBox,  0.5*zBox, 0*xTex+1*zTex, 0*xTex+0*yTex+1*zTex);
-    q5.vertex(-0.5*xBox, -0.5*yBox, -0.5*zBox, 0*xTex+1*zTex, 0*xTex+0*yTex+0*zTex);
-    q5.vertex( 0.5*xBox, -0.5*yBox, -0.5*zBox, 1*xTex+1*zTex, 0*xTex+0*yTex+0*zTex);
-    q5.vertex( 0.5*xBox, -0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 0*xTex+0*yTex+1*zTex);
-    q5.endShape();
-    
-    q6.beginShape();
-    q6.noStroke();
-    q6.vertex( 0.5*xBox,  0.5*yBox, -0.5*zBox, 1*xTex+2*zTex, 0*xTex+1*yTex+1*zTex);
-    q6.vertex(-0.5*xBox,  0.5*yBox, -0.5*zBox, 1*xTex+2*zTex, 1*xTex+1*yTex+1*zTex);
-    q6.vertex(-0.5*xBox,  0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 1*xTex+1*yTex+1*zTex);
-    q6.vertex( 0.5*xBox,  0.5*yBox,  0.5*zBox, 1*xTex+1*zTex, 0*xTex+1*yTex+1*zTex);
-    q6.endShape();
-    break;
-  }
-  
-  //Create and populate final box shape
-  PShape box = createShape(GROUP);
-  box.addChild(q1);
-  box.addChild(q2);
-  box.addChild(q3);
-  box.addChild(q4);
-  box.addChild(q5);
-  box.addChild(q6);
-  
-  //Return box
-  return box;
 }

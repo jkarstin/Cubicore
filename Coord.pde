@@ -112,11 +112,43 @@ public class Coord {
   public void normalize() {
     this.copy(this.normalized());
   }
+  
+  public void clampX(float min, float max) {
+    if (this.x() < min) this.setX(min);
+    else if (this.x() > max) this.setX(max);
+  }
+  
+  public void clampY(float min, float max) {
+    if (this.y() < min) this.setY(min);
+    else if (this.y() > max) this.setY(max);
+  }
+  
+  public void clampZ(float min, float max) {
+    if (this.z() < min) this.setZ(min);
+    else if (this.z() > max) this.setZ(max);
+  }
+
+  public Coord rotatedX(float angle) {
+    Coord ret = new Coord(this.x(), this.y()*cos(angle)-this.z()*sin(angle), this.y()*sin(angle)+this.z()*cos(angle));
+    return ret;
+  }
+
+  public Coord rotatedY(float angle) {
+    Coord ret = new Coord(this.x()*cos(angle)-this.z()*sin(angle), this.y(), this.x()*sin(angle)+this.z()*cos(angle));
+    return ret;
+  }
 
   public Coord rotatedZ(float angle) {
-    angle *= PI/180f;
     Coord ret = new Coord(this.x()*cos(angle)-this.y()*sin(angle), this.x()*sin(angle)+this.y()*cos(angle), this.z());
     return ret;
+  }
+  
+  public void rotateX(float angle) {
+    this.copy(this.rotatedX(angle));
+  }
+  
+  public void rotateY(float angle) {
+    this.copy(this.rotatedY(angle));
   }
   
   public void rotateZ(float angle) {
