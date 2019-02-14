@@ -13,7 +13,9 @@ PShape leg1, leg2, leg3, leg4;
 PShape cube;
 
 boolean moveLeft=false, moveRight=false, moveForward=false, moveBack=false, turnLeft=false, turnRight=false;
-boolean lockMouse=false;
+boolean lockMouse, locking;
+
+int middleX, middleY;
 
 Coord camLocVect, camRotVect, focalPointLocVect;
 Coord moveVect, mouseVect, turnVect;
@@ -23,13 +25,20 @@ Robot mouseRobot;
 void setup() {
   size(1280, 720, P3D);
   
+  PVector l = getWindowLocation();
+  middleX = (int)l.x+(width/2);
+  middleY = (int)l.y+(height/2);
+  
   try{
     mouseRobot = new Robot();
-    mouseRobot.mouseMove(width/2, height/2);
   } catch (Exception e) {
     println("mouseRobot failed to initialize!");
     exit();
   }
+  
+  lockMouse = true;
+  mouseRobot.mouseMove(middleX, middleY);
+  locking = true;
   
   camLocVect = new Coord(0, -750, 3000);
   focalPointLocVect = new Coord(0, -750, 0);
@@ -94,7 +103,14 @@ void keyPressed() {
     turnLeft = false;
   }
   
-  if (key == TAB) lockMouse = !lockMouse;
+  if (key == TAB) {
+    lockMouse = !lockMouse;
+    if (lockMouse) {
+      mouseRobot.mouseMove(middleX, middleY);
+      locking = true;
+    }
+    else cursor();
+  }
   if (key == ESC) exit();
 }
 
@@ -121,18 +137,23 @@ void keyReleased() {
   }
 }
 
-void mouseMoved() {
-  if (lockMouse) {
-    mouseVect = new Coord(mouseY-pmouseY, mouseX-pmouseX, 0f);
-    mouseRobot.mouseMove(width/2, height/2);
-  }
-}
-
 void draw() {
   background(127);
   
-  if (lockMouse) noCursor();
-  else cursor();
+  PVector l = getWindowLocation();
+  middleX = (int)l.x+(width/2);
+  middleY = (int)l.y+(height/2);
+  
+  //Keep mouse movement from affecting camera until securely locked in center.
+  if (locking && mouseX == width/2 && mouseY == height/2) {
+    locking = false;
+    noCursor();
+  }
+  
+  if (!locking && lockMouse) {
+    mouseVect = new Coord(mouseY-(height/2), mouseX-(width/2), 0f);
+    mouseRobot.mouseMove(middleX, middleY);
+  }
   
   moveVect.constant(0f);
   turnVect.constant(0f);
@@ -160,4 +181,16 @@ void draw() {
   camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), focalPointLocVect.x(), focalPointLocVect.y(), focalPointLocVect.z(), 0, 1.0, 0);
   
   shape(table);
+}
+
+/* Built from source code located at:
+ * https://forum.processing.org/two/discussion/17675/#Comment_72991
+ */
+PVector getWindowLocation() {
+  PVector l = new PVector();
+  com.jogamp.nativewindow.util.Point p = new com.jogamp.nativewindow.util.Point();
+  ((com.jogamp.newt.opengl.GLWindow)surface.getNative()).getLocationOnScreen(p);
+  l.x = p.getX();
+  l.y = p.getY();
+  return l;
 }
