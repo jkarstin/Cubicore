@@ -5,7 +5,7 @@ import java.awt.*;
 
 final float moveSpeed = 50;
 final float turnSpeed = 0.5;
-final float focalDepth = 3000;
+final float focalDepth = 10000;
 final UVUtils UVU = new UVUtils();
 
 PShape table;
@@ -40,8 +40,8 @@ void setup() {
   mouseRobot.mouseMove(middleX, middleY);
   locking = true;
   
-  camLocVect = new Coord(0, -750, 3000);
-  focalPointLocVect = new Coord(0, -750, 0);
+  camLocVect = new Coord(0, -2000, 3000);
+  focalPointLocVect = new Coord(camLocVect.x(), camLocVect.y(), camLocVect.z()-focalDepth);
   camRotVect = new Coord();
   moveVect = new Coord();
   mouseVect = new Coord();
@@ -50,7 +50,7 @@ void setup() {
   camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), focalPointLocVect.x(), focalPointLocVect.y(), focalPointLocVect.z(), 0, 1.0, 0);
   
   table = UVU.wrapBox("WoodenTable.png", new Coord(700, 50, 400));
-  cube = UVU.wrapCube("bitCubeTexture.png", 80, 100);
+  cube = UVU.wrapCube("bitCubeTexture.png", 80, 50);
   leg1 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
   leg2 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
   leg3 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
@@ -65,11 +65,11 @@ void setup() {
   table.addChild(leg3);
   table.addChild(leg4);
   leg1.rotateY(0);
-  leg1.translate(-310, 275, 160);
+  leg1.translate(-310, 275,  160);
   leg2.rotateY(PI/2);
-  leg2.translate(310, 275, 160);
+  leg2.translate( 310, 275,  160);
   leg3.rotateY(PI);
-  leg3.translate(310, 275, -160);
+  leg3.translate( 310, 275, -160);
   leg4.rotateY(3*PI/2);
   leg4.translate(-310, 275, -160);
 }
