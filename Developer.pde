@@ -28,7 +28,7 @@ public class Developer {
     try{
       mouseRobot = new Robot();
     } catch (Exception e) {
-      println("mouseRobot failed to initialize!");
+      println("ERROR: mouseRobot failed to initialize!");
       exit();
     }
     
@@ -73,9 +73,9 @@ public class Developer {
   public void Update() {
     background(127);
     
+    //Input gathering
     InputEvent ie = Input.getInputEvent();
     if (ie != null) {
-      //Input gathering
       if (ie.eventCodeIs(InputEvent.KEYPRESS)) {
         if (ie.keyIs('a')) {
           moveLeft = true;
