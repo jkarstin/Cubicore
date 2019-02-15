@@ -8,6 +8,7 @@ public class Developer {
   
   PShape table;
   PShape leg1, leg2, leg3, leg4;
+  PShape door;
   PShape cube;
   
   boolean moveLeft=false, moveRight=false, moveForward=false, moveBack=false, turnLeft=false, turnRight=false;
@@ -52,6 +53,7 @@ public class Developer {
     leg2 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), new Coord(50, 1000, 50), UVUtils.SHELL);
     leg3 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), new Coord(50, 1000, 50), UVUtils.SHELL);
     leg4 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), new Coord(50, 1000, 50), UVUtils.SHELL);
+    door = UVU.wrapBox("Door.png", new Coord(200, 100, 5), new Coord(2000, 1000, 50));
     if (table == null || cube == null || leg1 == null || leg2 == null || leg3 == null || leg4 == null) exit();
     
     table.addChild(cube);
@@ -70,6 +72,8 @@ public class Developer {
     leg4.rotateY(3*PI/2);
     leg4.translate(-960, 525, -460);
     table.translate(0, -1025, 0);
+    door.rotateZ(-PI/2);
+    door.translate(0, 0, -5000);
   }
   
   public void Update() {
@@ -157,6 +161,7 @@ public class Developer {
     cam.update();
     
     shape(table);
+    shape(door);
   }
   
   /* Built from source code located at:
