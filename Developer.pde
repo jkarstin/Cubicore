@@ -46,12 +46,12 @@ public class Developer {
     
     cam.update();
     
-    table = UVU.wrapBox("WoodenTable.png", new Coord(700, 50, 400));
+    table = UVU.wrapBox("WoodenTable.png", new Coord(700, 50, 400), new Coord(2000, 50, 1000));
     cube = UVU.wrapCube("bitCubeTexture.png", 80, 100);
-    leg1 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
-    leg2 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
-    leg3 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
-    leg4 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), UVUtils.SHELL);
+    leg1 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), new Coord(50, 1000, 50), UVUtils.SHELL);
+    leg2 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), new Coord(50, 1000, 50), UVUtils.SHELL);
+    leg3 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), new Coord(50, 1000, 50), UVUtils.SHELL);
+    leg4 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), new Coord(50, 1000, 50), UVUtils.SHELL);
     if (table == null || cube == null || leg1 == null || leg2 == null || leg3 == null || leg4 == null) exit();
     
     table.addChild(cube);
@@ -62,13 +62,14 @@ public class Developer {
     table.addChild(leg3);
     table.addChild(leg4);
     leg1.rotateY(0);
-    leg1.translate(-310, 275, 160);
+    leg1.translate(-960, 525, 460);
     leg2.rotateY(PI/2);
-    leg2.translate(310, 275, 160);
+    leg2.translate(960, 525, 460);
     leg3.rotateY(PI);
-    leg3.translate(310, 275, -160);
+    leg3.translate(960, 525, -460);
     leg4.rotateY(3*PI/2);
-    leg4.translate(-310, 275, -160);
+    leg4.translate(-960, 525, -460);
+    table.translate(0, -1025, 0);
   }
   
   public void Update() {
