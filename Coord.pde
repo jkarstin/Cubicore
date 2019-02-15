@@ -174,4 +174,9 @@ public class Coord {
   public float distanceFrom(Coord c) {
     return this.minus(c).distance();
   }
+  
+  public String toString() {
+    String out = "( " + str(this.x()) + ", " + str(this.y()) + ", " + str(this.z()) + ")";
+    return out;
+  }
 }

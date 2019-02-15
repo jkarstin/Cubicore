@@ -15,8 +15,8 @@ public class Developer {
   
   int middleX, middleY;
   
-  Coord camLocVect, camRotVect, focalPointLocVect;
   Coord moveVect, mouseVect, turnVect;
+  Camera cam;
   
   Robot mouseRobot;
   
@@ -36,14 +36,15 @@ public class Developer {
     mouseRobot.mouseMove(middleX, middleY);
     locking = true;
     
-    camLocVect = new Coord(0, -750, 3000);
-    focalPointLocVect = new Coord(0, -750, 0);
-    camRotVect = new Coord();
+    cam = new Camera();
+    cam.setActive();
+    cam.move(new Coord(0, -2000, 3000));
+    
     moveVect = new Coord();
     mouseVect = new Coord();
     turnVect = new Coord();
     
-    camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), focalPointLocVect.x(), focalPointLocVect.y(), focalPointLocVect.z(), 0, 1.0, 0);
+    cam.update();
     
     table = UVU.wrapBox("WoodenTable.png", new Coord(700, 50, 400));
     cube = UVU.wrapCube("bitCubeTexture.png", 80, 100);
@@ -146,21 +147,13 @@ public class Developer {
     else if (moveBack)  moveVect.add(new Coord( 0f,  0f,  1f));
     
     moveVect.normalize();
-    moveVect.rotateY(camRotVect.y());
-    
-    camLocVect.add(moveVect.times(moveSpeed));
+    cam.move(moveVect.times(moveSpeed));
   
     turnVect.add(mouseVect);
     mouseVect.constant(0f);
-    camRotVect.add(turnVect.times(turnSpeed*PI/180));
-    camRotVect.clampX(-80f*PI/180, 80f*PI/180);
+    cam.rotate(turnVect.times(turnSpeed*PI/180));
     
-    focalPointLocVect = new Coord(0f, 0f, -focalDepth);
-    focalPointLocVect.rotateX(camRotVect.x());
-    focalPointLocVect.rotateY(camRotVect.y());
-    focalPointLocVect.add(camLocVect);
-    
-    camera(camLocVect.x(), camLocVect.y(), camLocVect.z(), focalPointLocVect.x(), focalPointLocVect.y(), focalPointLocVect.z(), 0, 1.0, 0);
+    cam.update();
     
     shape(table);
   }
