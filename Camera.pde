@@ -15,6 +15,7 @@ public class Camera {
     this.setUpVector(new Coord(0f, 1f, 0f));
     this.mRotXMax =  80*PI/180;
     this.mRotXMin = -80*PI/180;
+    this.setNearClippingPlane(10);
     this.setFarClippingPlane(10000);
     this.setInactive();
   }
@@ -29,6 +30,10 @@ public class Camera {
   
   public void setUpVector(Coord up) {
     this.mUpVector = up;
+  }
+  
+  public void setNearClippingPlane(float z) {
+    this.mNearClippingPlane = z;
   }
   
   public void setFarClippingPlane(float z) {

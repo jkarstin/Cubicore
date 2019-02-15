@@ -3,7 +3,7 @@ import java.awt.*;
 public class Developer {
   final float moveSpeed = 50;
   final float turnSpeed = 0.5;
-  final float focalDepth = 3000;
+  final float focalDepth = 50000;
   final UVUtils UVU = new UVUtils();
   
   PShape table;
@@ -38,8 +38,9 @@ public class Developer {
     locking = true;
     
     cam = new Camera();
+    cam.setFarClippingPlane(focalDepth);
     cam.setActive();
-    cam.move(new Coord(0, -2000, 3000));
+    cam.move(new Coord(0, -1750, 3000));
     
     moveVect = new Coord();
     mouseVect = new Coord();
@@ -72,8 +73,20 @@ public class Developer {
     leg4.rotateY(3*PI/2);
     leg4.translate(-960, 525, -460);
     table.translate(0, -1025, 0);
-    door.rotateZ(-PI/2);
-    door.translate(0, 0, -5000);
+    
+    //Currently known (and reported) bug with PShape class.
+    try {
+      door.rotateZ(-HALF_PI);
+    } catch (ClassCastException e) {
+      println("ClassCastException issue still exists!");
+      println("Temporary work-around in place");
+      e.printStackTrace();
+      
+      door.rotateX(-HALF_PI);
+      door.rotateY(-HALF_PI);
+      door.rotateX(HALF_PI);
+    }
+    door.translate(0, -1000, -5000);
   }
   
   public void Update() {
