@@ -41,12 +41,11 @@ public class Developer {
     cam.setFarClippingPlane(focalDepth);
     cam.setActive();
     cam.move(new Coord(0, -1750, 3000));
+    cam.update();
     
     moveVect = new Coord();
     mouseVect = new Coord();
     turnVect = new Coord();
-    
-    cam.update();
     
     table = UVU.wrapBox("WoodenTable.png", new Coord(700, 50, 400), new Coord(2000, 50, 1000));
     cube = UVU.wrapCube("bitCubeTexture.png", 80, 100);
@@ -74,7 +73,7 @@ public class Developer {
     leg4.translate(-960, 525, -460);
     table.translate(0, -1025, 0);
     
-    //Currently known (and reported) bug with PShape class.
+    //Currently known (and reported) bug with PShape.rotateZ() method.
     try {
       door.rotateZ(-HALF_PI);
     } catch (ClassCastException e) {
@@ -125,19 +124,11 @@ public class Developer {
         if (ie.keyIs(ESC)) exit();
       }
       else if (ie.eventCodeIs(InputEvent.KEYRELEASE)) {
-        if (ie.keyIs('a')) {
-          moveLeft = false;
-        }
-        else if (ie.keyIs('d')) {
-          moveRight = false;
-        }
+        if (ie.keyIs('a'))      moveLeft    = false;
+        else if (ie.keyIs('d')) moveRight   = false;
         
-        if (ie.keyIs('w')) {
-          moveForward = false;
-        }
-        else if (ie.keyIs('s')) {
-          moveBack = false;
-        }
+        if (ie.keyIs('w'))      moveForward = false;
+        else if (ie.keyIs('s')) moveBack    = false;
       }
     }
 
