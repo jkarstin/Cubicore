@@ -15,7 +15,8 @@ public class Camera {
     this.setUpVector(new Coord(0f, 1f, 0f));
     this.mRotXMax =  80*PI/180;
     this.mRotXMin = -80*PI/180;
-    this.setNearClippingPlane(10);
+    this.setFOV(PI/3);
+    this.setNearClippingPlane(50);
     this.setFarClippingPlane(10000);
     this.setInactive();
   }
@@ -30,6 +31,10 @@ public class Camera {
   
   public void setUpVector(Coord up) {
     this.mUpVector = up;
+  }
+  
+  public void setFOV(float fov) {
+    this.mFOV = fov;
   }
   
   public void setNearClippingPlane(float z) {
@@ -69,8 +74,9 @@ public class Camera {
       focalPointLocVect.rotateY(this.mRotation.y());
       focalPointLocVect.add(this.mLocation);
       
+      frustum(-this.mNearClippingPlane*tan(this.mFOV/2f)*width/height, this.mNearClippingPlane*tan(this.mFOV/2f)*width/height, -this.mNearClippingPlane*tan(this.mFOV/2f), this.mNearClippingPlane*tan(this.mFOV/2f), this.mNearClippingPlane, this.mFarClippingPlane);
       camera(this.mLocation.x(), this.mLocation.y(), this.mLocation.z(), focalPointLocVect.x(), focalPointLocVect.y(), focalPointLocVect.z(), this.mUpVector.x(), this.mUpVector.y(), this.mUpVector.z());
     }
-    else println("Camera is inactive!");
+    else println("Camera is inactive, activate or update a different camera!");
   }
 }

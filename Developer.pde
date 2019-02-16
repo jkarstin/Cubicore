@@ -3,7 +3,7 @@ import java.awt.*;
 public class Developer {
   final float moveSpeed = 50;
   final float turnSpeed = 0.5;
-  final float focalDepth = 50000;
+  final float focalDepth = 20000;
   final UVUtils UVU = new UVUtils();
   
   PShape table;
@@ -80,13 +80,13 @@ public class Developer {
     } catch (ClassCastException e) {
       println("ClassCastException issue still exists!");
       println("Temporary work-around in place");
-      e.printStackTrace();
+      //e.printStackTrace();
       
       door.rotateX(-HALF_PI);
       door.rotateY(-HALF_PI);
       door.rotateX(HALF_PI);
     }
-    door.translate(0, -1000, -5000);
+    door.translate(0, -1000, -3500);
   }
   
   public void Update() {
