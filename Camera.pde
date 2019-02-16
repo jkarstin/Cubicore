@@ -74,7 +74,10 @@ public class Camera {
       focalPointLocVect.rotateY(this.mRotation.y());
       focalPointLocVect.add(this.mLocation);
       
-      frustum(-this.mNearClippingPlane*tan(this.mFOV/2f)*width/height, this.mNearClippingPlane*tan(this.mFOV/2f)*width/height, -this.mNearClippingPlane*tan(this.mFOV/2f), this.mNearClippingPlane*tan(this.mFOV/2f), this.mNearClippingPlane, this.mFarClippingPlane);
+      float BT = this.mNearClippingPlane*tan(this.mFOV/2f);
+      float LR = BT*width/height;
+      
+      frustum(-LR, LR, -BT, BT, this.mNearClippingPlane, this.mFarClippingPlane);
       camera(this.mLocation.x(), this.mLocation.y(), this.mLocation.z(), focalPointLocVect.x(), focalPointLocVect.y(), focalPointLocVect.z(), this.mUpVector.x(), this.mUpVector.y(), this.mUpVector.z());
     }
     else println("Camera is inactive, activate or update a different camera!");
