@@ -22,6 +22,9 @@ public class Developer {
   Robot mouseRobot;
   
   public void Start() {
+    
+    /* MOUSE LOCKING SETUP */
+    
     PVector l = getWindowLocation();
     middleX = (int)l.x+(width/2);
     middleY = (int)l.y+(height/2);
@@ -37,6 +40,8 @@ public class Developer {
     mouseRobot.mouseMove(middleX, middleY);
     locking = true;
     
+    /* CAMERA SETUP */
+    
     cam = new Camera();
     cam.setFarClippingPlane(focalDepth);
     cam.setActive();
@@ -46,6 +51,8 @@ public class Developer {
     moveVect = new Coord();
     mouseVect = new Coord();
     turnVect = new Coord();
+    
+    /* INITIAL OBJECT MODEL PLACEMENT */
     
     table = UVU.wrapBox("WoodenTable.png", new Coord(700, 50, 400), new Coord(2000, 50, 1000));
     cube = UVU.wrapCube("bitCubeTexture.png", 80, 100);
@@ -91,7 +98,8 @@ public class Developer {
   public void Update() {
     background(127);
     
-    //Input gathering
+    /* INPUT GATHERING MANAGEMENT */
+    
     InputEvent ie = Input.getInputEvent();
     if (ie != null) {
       if (ie.eventCodeIs(InputEvent.KEYPRESS)) {
@@ -113,6 +121,7 @@ public class Developer {
           moveForward = false;
         }
         
+        /* CHANGE MOUSE LOCK SETTINGS */
         if (ie.keyIs(TAB)) {
           lockMouse = !lockMouse;
           if (lockMouse) {
@@ -132,6 +141,8 @@ public class Developer {
       }
     }
 
+    /* MOUSE LOCKING MANAGEMENT */
+
     PVector l = getWindowLocation();
     middleX = (int)l.x+(width/2);
     middleY = (int)l.y+(height/2);
@@ -146,6 +157,8 @@ public class Developer {
       mouseVect = new Coord(mouseY-(height/2), mouseX-(width/2), 0f);
       mouseRobot.mouseMove(middleX, middleY);
     }
+    
+    /* CAMERA MOVEMENT MANAGEMENT */
     
     moveVect.constant(0f);
     turnVect.constant(0f);
@@ -163,6 +176,8 @@ public class Developer {
     cam.rotate(turnVect.times(turnSpeed*PI/180));
     
     cam.update();
+    
+    /* DISPLAY OBJECT MODELS */
     
     shape(table);
     shape(door);
