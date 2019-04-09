@@ -1,3 +1,10 @@
+/* Developer.pde
+ * 
+ * Game development "playground" class.
+ * 
+ * J Karstin Neill    02.15.2019
+ */
+
 import java.awt.*;
 
 public class Developer {

@@ -1,3 +1,10 @@
+/* Input.pde
+ * 
+ * Input management class.
+ * 
+ * J Karstin Neill    02.15.2019
+ */
+
 public static class Input {
   private final static int sQUEUESIZE = 8;
   

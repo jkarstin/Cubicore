@@ -1,3 +1,10 @@
+/* UVutils.pde
+ * 
+ * Executes texture wrapping around defined cube shapes.
+ * 
+ * J Karstin Neill    02.15.2019
+ */
+
 public class UVUtils {
   public static final int CROSS = 0;
   public static final int SHELL = 1;

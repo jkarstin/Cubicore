@@ -1,3 +1,10 @@
+/* Camera.pde
+ * 
+ * Camera management class.
+ * 
+ * J Karstin Neill    02.15.2019
+ */
+
 public class Camera {
   private Coord mLocation;
   private Coord mRotation;

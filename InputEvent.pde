@@ -1,3 +1,10 @@
+/* InputEvent.pde
+ * 
+ * InputEvent class for standardizing input data as objects.
+ * 
+ * J Karstin Neill    02.15.2019
+ */
+
 public class InputEvent {
   public static final int KEYPRESS = 0;
   public static final int KEYRELEASE = 1;
