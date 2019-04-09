@@ -15,6 +15,7 @@ public class Ray {
     this.mDirection = new Coord();
     this.mDistance = 0;
   }
+  
   public Ray(Coord origin, Coord direction, float distance) {
     this.mOrigin = origin;
     this.mDirection = direction;

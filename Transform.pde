@@ -12,6 +12,9 @@ public class Transform {
   private Transform mParent;
   
   public Transform() {
-    
+    this.mLocation = new Coord();
+    this.mRotation = new Coord();
+    this.mScale = new Coord(1f);
+    this.mParent = null;
   }
 };

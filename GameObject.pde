@@ -11,6 +11,8 @@ public class GameObject {
   private Collider mCollider;
   
   public GameObject() {
-    
+    this.mTransform = new Transform();
+    this.mMesh = new Mesh();
+    this.mCollider = new Collider();
   }
 };

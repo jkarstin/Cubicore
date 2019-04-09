@@ -7,8 +7,10 @@
 
 public class Collider {
   public Transform mTransform;
+  public Coord mDimensions;
   
   public Collider() {
-    
+    this.mTransform = new Transform();
+    this.mDimensions = new Coord(1f);
   }
 };

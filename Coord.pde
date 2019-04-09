@@ -20,6 +20,12 @@ public class Coord {
     this.setZ(z);
   }
   
+  public Coord(float f) {
+    this.setX(f);
+    this.setY(f);
+    this.setZ(f);
+  }
+  
   public Coord(Coord c) {
     this.copy(c);
   }
