@@ -116,7 +116,6 @@ public class UVUtils {
           }
         }
         if (loc.length() > 0 && locIndex == 4) {
-          println("texUV.y: " + loc);
           texUV.setY(Float.parseFloat(loc));
         }
         tri.vertex(modelCoord.x(), modelCoord.y(), modelCoord.z(), texUV.x(), texUV.y());
