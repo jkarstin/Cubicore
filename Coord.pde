@@ -54,6 +54,11 @@ public class Coord {
     this.mZ = z;
   }
   
+  public Coord makeCopy() {
+    Coord c = new Coord(this.x(), this.y(), this.z());
+    return c;
+  }
+  
   public void copy(Coord c) {
     this.setX(c.x());
     this.setY(c.y());
@@ -159,6 +164,22 @@ public class Coord {
   
   public void rotateZ(float angle) {
     this.copy(this.rotatedZ(angle));
+  }
+  
+  public Coord rotatedXAbout(Coord pivot, float angle) {
+    return this.minus(pivot).rotatedX(angle).plus(pivot);
+  }
+  
+  public void rotateXAbout(Coord pivot, float angle) {
+    this.copy(this.rotatedXAbout(pivot, angle));
+  }
+
+  public Coord rotatedYAbout(Coord pivot, float angle) {
+    return this.minus(pivot).rotatedY(angle).plus(pivot);
+  }
+  
+  public void rotateYAbout(Coord pivot, float angle) {
+    this.copy(this.rotatedYAbout(pivot, angle));
   }
   
   public Coord rotatedZAbout(Coord pivot, float angle) {

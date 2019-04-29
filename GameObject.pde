@@ -15,4 +15,28 @@ public class GameObject {
     this.mMesh = new Mesh();
     this.mCollider = new Collider();
   }
+  
+  public void setTransform(Transform t) {
+    this.mTransform = t;
+  }
+  
+  public void setMesh(Mesh m) {
+    this.mMesh = m;
+  }
+  
+  public void setCollider(Collider c) {
+    this.mCollider = c;
+  }
+  
+  public Transform transform() {
+    return this.mTransform;
+  }
+  
+  public Mesh mesh() {
+    return this.mMesh;
+  }
+  
+  public Collider collider() {
+    return this.mCollider;
+  }
 };
