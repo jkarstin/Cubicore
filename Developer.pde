@@ -61,9 +61,10 @@ public class Developer {
     
     /* INITIAL OBJECT MODEL PLACEMENT */
     
+    table = UVU.importModel("table.mdl");
     door = UVU.importModel("door.mdl");
     
-    table = UVU.wrapBox("WoodenTable.png", new Coord(700, 50, 400), new Coord(2000, 50, 1000));
+    //table = UVU.wrapBox("WoodenTable.png", new Coord(700, 50, 400), new Coord(2000, 50, 1000));
     cube = UVU.wrapCube("bitCubeTexture.png", 80, 100);
     leg1 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), new Coord(50, 1000, 50), UVUtils.SHELL);
     leg2 = UVU.wrapBox("TableLeg.png", new Coord(40, 500, 40), new Coord(50, 1000, 50), UVUtils.SHELL);
