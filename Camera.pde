@@ -86,6 +86,32 @@ public class Camera {
       
       frustum(-LR, LR, -BT, BT, this.mNearClippingPlane, this.mFarClippingPlane);
       camera(this.mLocation.x(), this.mLocation.y(), this.mLocation.z(), focalPointLocVect.x(), focalPointLocVect.y(), focalPointLocVect.z(), this.mUpVector.x(), this.mUpVector.y(), this.mUpVector.z());
+      
+      //CAMERA FILTER
+      //IMPORTANT TODO: Make sure to check for pixels overflow, because as of now, there is no checking for it
+      int squareSize = 8;
+      for (int x=0; x < width; x += squareSize) {
+        for (int y=0; y < height; y += squareSize) {
+          loadPixels();
+          float rsum = 0, gsum = 0, bsum = 0;
+          for (int i=0; i < squareSize; i++) {
+            for (int j=0; j < squareSize; j++) {
+              rsum += red(pixels[x+i + (y+j)*width]);
+              gsum += green(pixels[x+i + (y+j)*width]);
+              bsum += blue(pixels[x+i + (y+j)*width]);
+            }
+          }
+          rsum /= squareSize*squareSize;
+          gsum /= squareSize*squareSize;
+          bsum /= squareSize*squareSize;
+          for (int i=0; i < squareSize; i++) {
+            for (int j=0; j < squareSize; j++) {
+              pixels[x+i + (y+j)*width] = color(rsum, gsum, bsum);
+            }
+          }
+        }
+      }
+      updatePixels();
     }
     else println("Camera is inactive, activate or update a different camera!");
   }

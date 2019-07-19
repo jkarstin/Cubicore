@@ -185,12 +185,14 @@ public class Developer {
     mouseVect.constant(0f);
     cam.rotate(turnVect.times(turnSpeed*PI/180));
     
-    cam.update();
+    //cam.update();
     
     /* DISPLAY OBJECT MODELS */
     
     shape(table);
     shape(door);
+    
+    cam.update();
   }
   
   /* Built from source code located at:
