@@ -2,7 +2,7 @@
  * 
  * InputEvent class for standardizing input data as objects.
  * 
- * J Karstin Neill    02.15.2019
+ * J Karstin Neill    07.30.2019
  */
 
 public class InputEvent {

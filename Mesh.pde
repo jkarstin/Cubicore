@@ -2,11 +2,11 @@
  * 
  * Texture wrapping management class.
  * 
- * J Karstin Neill    04.19.2019
+ * J Karstin Neill    07.30.2019
  */
 
 public class Mesh {
-  private PImage mTextureImage;
+  private MeshTri[] mMeshTris;
   
   public Mesh() {
     

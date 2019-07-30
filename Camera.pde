@@ -2,7 +2,7 @@
  * 
  * Camera management class.
  * 
- * J Karstin Neill    02.15.2019
+ * J Karstin Neill    07.30.2019
  */
 
 public class Camera {

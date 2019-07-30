@@ -1,8 +1,11 @@
 /* Collider.pde
  * 
  * Collision management class.
+ * **** WIP ****
+ * Currently only focusing on supporting static rotation cube and sperical collider shapes.
+ * Future intent to implement convex hull identification methods to allow for dynamic convex collider geometry.
  * 
- * J Karstin Neill    04.19.2019
+ * J Karstin Neill    07.30.2019
  */
 
 public class Collider {

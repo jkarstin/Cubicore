@@ -2,14 +2,12 @@
  * 
  * Executes texture wrapping around defined cube shapes.
  * 
- * J Karstin Neill    02.15.2019
+ * J Karstin Neill    07.30.2019
  */
 
 
-
-
 /* Model file definition: (.mdl)
- * <img_file_location>
+ * <img_file_location>s
  * <img_width> <img_height>
  * <num_tris>
  * <model_a_x_0> <model_a_y_0> <model_a_z_0> <img_u_0> <img_v_0>
@@ -20,8 +18,6 @@
  * <model_b_x_n-1> <model_b_y_n-1> <model_b_z_n-1> <img_u_n-1> <img_v_n-1>
  * <model_c_x_n-1> <model_c_y_n-1> <model_c_z_n-1> <img_u_n-1> <img_v_n-1>
  */
-
-
 
 
 public class UVUtils {

@@ -2,7 +2,7 @@
  * 
  * Coordinate unit for management of points in "3D" space.
  * 
- * J Karstin Neill 01.24.2019
+ * J Karstin Neill 07.30.2019
  */
 
 public class Coord {

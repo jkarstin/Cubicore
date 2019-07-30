@@ -2,7 +2,7 @@
  * 
  * Specialized Coord conglomerate designed to better manage physics raycasting.
  * 
- * J Karstin Neill    04.19.2019
+ * J Karstin Neill    07.30.2019
  */
 
 public class Ray {
